@@ -7,6 +7,11 @@ section: the AI drafts a section, you check it, and only then does the next
 section start. Everything it produces is a DRAFT that a functional safety
 engineer must review.
 
+############################################################################################################
+
+Folder name: C:\AutoMinds\InDev-Code_VV\iso26262-generator-react_Full_with_Bat\iso26262-generator-react
+
+############################################################################################################
 
 ------------------------------------------------------------------------------
 1. START AND STOP
