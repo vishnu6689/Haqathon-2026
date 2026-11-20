@@ -1,0 +1,191 @@
+ISO 26262 WORK PRODUCT GENERATOR - HOW TO USE THE APP
+Version 1.0.0
+
+The app writes first drafts of ISO 26262 work products (Item Definition,
+Safety Plan, HARA, Safety Goals) with an AI model. It works section by
+section: the AI drafts a section, you check it, and only then does the next
+section start. Everything it produces is a DRAFT that a functional safety
+engineer must review.
+
+
+------------------------------------------------------------------------------
+1. START AND STOP
+------------------------------------------------------------------------------
+
+Start:  double-click start.bat in the project folder.
+        The browser opens at http://localhost:5173.
+        The first start takes a few minutes (it installs everything and opens
+        backend\.env in Notepad - enter your Qwen server and model, save,
+        close Notepad).
+
+Stop:   double-click stop.bat.
+
+Team:   "start.bat team" starts one server for colleagues.
+        They open http://<your PC name>:8000
+
+Check:  the bottom of the left sidebar shows "Backend: connected (Python)",
+        the provider, the model and "Version 1.0.0".
+
+
+------------------------------------------------------------------------------
+2. ONE-TIME SETTINGS (only if not done in backend\.env)
+------------------------------------------------------------------------------
+
+Sidebar -> Settings
+  - Model provider:  OpenAI-compatible API (for Qwen)
+  - API base URL:    e.g. http://192.168.137.125:30012/v1
+  - API key:         only if your server needs one
+  - Model:           e.g. Qwen3.8-27B-FP8
+  - Click "Test connection" - it lists the models of the server.
+  - Click "Save settings".
+
+No model available? Choose "Demo mode (no AI)" to try the workflow with
+sample data.
+
+
+------------------------------------------------------------------------------
+3. GENERATE A WORK PRODUCT
+------------------------------------------------------------------------------
+
+Sidebar -> Home
+
+  1. Project / item name     e.g. "ACCS - passenger car M1"
+                             (used on the cover and in the file name)
+  2. Select Work Product     Item Definition, Safety Plan, HARA or Safety Goals
+  3. System Concept          upload the concept document (Word, Excel, PDF, text)
+  4. System Architecture     optional: upload a document, or describe the ECUs,
+                             sensors, actuators and signals in the text box
+  5. Assumptions             optional: vehicle type, speed range, standards,
+                             customer requirements ...
+  6. Guided mode             leave it ON (recommended)
+  7. Click "Generate ..."
+
+Advanced Options (Home page, your own settings):
+  - Max rows per section   upper limit of rows per table
+  - RAG chunks (top-k)     how many reference extracts are used (0 = none)
+  - Temperature            lower = more consistent wording
+
+
+------------------------------------------------------------------------------
+4. REVIEW EACH SECTION
+------------------------------------------------------------------------------
+
+The Generate page shows a progress list (P01, P02 ...) and the current section.
+
+Status of a section:
+  Locked      waits until the previous section is accepted
+  Generating  the AI is writing it
+  Review      your turn - check the draft
+  Accepted    approved; used as context for the next sections
+  Skipped     left open for later
+  Error       the AI call failed - click Regenerate or Skip for now
+
+Validation badge (above the table):
+  green   = passed
+  orange  = warnings (e.g. empty cells, numbers not found in your inputs)
+  red     = errors (e.g. duplicate IDs, missing S/E/C) - Accept is blocked
+            until they are fixed
+  Click the badge to see the details.
+
+Buttons:
+  Accept          approve the section; the next one is generated
+  Edit            change cells, add or delete rows; click "Done editing"
+  Regenerate      get a completely new draft of this section
+  Apply Changes   type a change in "Request changes" (e.g. "Add a DEGRADED
+                  state for camera blockage"), then click Apply Changes
+  Skip for now    leave the section open and continue with the next one
+                  (also works while it is generating)
+
+You can click any earlier section in the progress list to look at it again.
+Editing an accepted section sets it back to Review - accept it again.
+
+HARA: the ASIL column is calculated by the app from S, E and C
+(ISO 26262-3 Table 4). Change S, E or C and the ASIL updates. The AI never
+sets the ASIL.
+
+
+------------------------------------------------------------------------------
+5. DOWNLOAD AND CONTINUE
+------------------------------------------------------------------------------
+
+  - "Download Excel" saves the work product. For the Item Definition, the
+    app fills your company template (same sheets, colours and layout).
+  - You can download a draft at any time; the cover sheet and the
+    "Review status" column show what was accepted or skipped.
+  - When all sections are accepted or skipped, use the buttons
+    "Use as input for HARA" / "Safety Plan" / "Safety Goals".
+    Only ACCEPTED sections are passed on.
+  - Recommended order: Item Definition -> HARA -> Safety Goals
+    (Safety Plan also from the Item Definition).
+  - Instead of the current session you can also upload an earlier exported
+    Excel file as the upstream work product on the Home page.
+
+IMPORTANT: the current run is kept only in the browser. Download the Excel
+file before you close or reload the page.
+
+
+------------------------------------------------------------------------------
+6. REFERENCE LIBRARY (optional)
+------------------------------------------------------------------------------
+
+Sidebar -> Reference Library
+  - Add your own example documents (sample Item Definitions, HARAs, safety
+    goals, company guidelines) to the matching category, then click
+    "Add to library".
+  - They are used as style examples, not copied.
+  - The library is stored on the backend and shared with everybody using
+    the same server.
+  - Only add documents you are allowed to use (no licensed standard text).
+
+
+------------------------------------------------------------------------------
+7. TIPS FOR BETTER DRAFTS
+------------------------------------------------------------------------------
+
+  - Give a clear system concept: function names, sensors, actuators, speed
+    ranges, HMI. The AI only knows what you upload.
+  - Use "Apply Changes" with short, specific requests instead of editing
+    many cells by hand.
+  - Watch the warning "Values not found in the inputs" - the AI may have
+    invented a number.
+  - "[TBD]" marks information the inputs did not give. Fill it in later.
+  - A warning "Inputs were shortened to fit the model's context window"
+    means the model server is small (e.g. 4096 tokens). Ask the server admin
+    for a larger context window for better results.
+
+
+------------------------------------------------------------------------------
+8. IF SOMETHING GOES WRONG
+------------------------------------------------------------------------------
+
+  "The backend is not reachable"
+      Start the app with start.bat, or check the minimized window
+      "WPG backend" in the taskbar for an error.
+
+  "Cannot reach the API at ..."
+      Wrong server address in Settings, the Qwen server is down, or a
+      company proxy blocks it (add the server to NO_PROXY in backend\.env).
+
+  "API key rejected (401)"
+      Enter the correct key in Settings or in backend\.env.
+
+  "The answer was cut off ..."
+      Raise "Max output tokens" in Settings or lower "Max rows per section".
+
+  "The model returned no usable rows ..."
+      Click Regenerate, lower "Max rows per section", or Skip for now.
+
+  The section takes very long
+      Large models can need a minute or more per section. Click Stop or
+      Skip for now if needed.
+
+
+------------------------------------------------------------------------------
+9. FOR DEVELOPERS ONLY
+------------------------------------------------------------------------------
+
+Open the app with ?dev=1 at the end of the address
+(http://localhost:5173/?dev=1) to show the Developer page: system prompt,
+instructions per work product and section, company template and filled
+example, prompt preview and the log of the last 30 AI calls.
+Changes apply to every user of the server. ?dev=0 hides the page again.
