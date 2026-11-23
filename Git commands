@@ -1,0 +1,14 @@
+git clone https://hackathon-git.quest-global.com/1013118/autominds.git
+   18  cd autominds/
+   19  git switch --create main
+   20  touch README.md
+   21  git add README.md
+   22  git commit -m "add README"
+   23  git config --global user.email "you@example.com"
+   24  git config --global user.email "1013118@quest-global.com"
+   25  git config --global user.name "1013118"
+   26  git commit -m "add README"
+   27  git push --set-upstream origin main
+   28  git add .
+   29  git push --set-upstream origin main
+   30  git commit -m "Base Files added"
