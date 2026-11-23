@@ -1,0 +1,10 @@
+To address this challenge, we developed an ISO 26262 Work Product Generator, an internal web app  designed to support the early stages of the Functional Safety lifecycle.
+ 
+Following the ISO 26262 concept phase, our solution focuses on two key work products: Item Definition and Hazard Analysis and Risk Assessment, or HARA, including the derivation of Safety Goals.
+ 
+The generation workflow begins with OEM-provided system architecture and system concept specifications. These inputs are processed in accordance with OEM-defined ISO 26262 work product templates to derive the Item Definition and subsequent HARA work products, maintaining alignment with the prescribed Functional Safety development process.
+ 
+Qwen AI model assists in drafting each section, while a Functional Safety engineer reviews and approves the content before proceeding to the next stage.
+Importantly, safety-related assessments such as Exposure, Severity, Controllability and ASIL determination are calculated through a dedicated rule-based engine, following the applicable HARA guidelines and ISO 26262 Part 3.
+The solution remains within the company network, and all generated outputs are treated as drafts for expert review and approval.
+In this way, we are not changing the ISO 26262 process; we are making its execution more efficient through AI-assisted engineering.
